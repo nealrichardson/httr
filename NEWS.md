@@ -1,5 +1,77 @@
 # httr 1.2.1.9000
 
+* `oauth_app()` allows you to specify the `redirect_url` if you need to 
+  customise it. `oauth2.0_token()` gains a `credentials` argument that 
+  allows you to further customise the auth flow. New `oauth2.0_authorize_url()`
+  and `oauth2.0_access_token()` functions pull out parts of the OAuth 
+  process so you can call yourself. All these changes are in the service
+  of making it easier to use OAuth from shiny (#457).
+
+* `oauth_signature()` now normalises the URL as described in the OAuth1.0a
+  spec (@leeper, #435)
+
+* Deprecated `safe_callback()` has been removed.
+
+* `init_oauth2.0()` gains `client_credentials`, defaulting to `FALSE`, which 
+  allows you to use Oauth2 dance with some APIs (e.g yelp) that required 
+  *Client Credential Grant* instead of *Authorization Code Grant* for 
+  obtaining authorization. See [RFC 6749](https://tools.ietf.org/html/rfc6749#section-4).
+  (@cderv, #384)
+
+* `BROWSER()` prints a message telling you to browse to the URL if called
+  in a non-interactive session.
+
+* `is_interactive` argument to `init_oauth1.0()`, `init_oauth2.0()` and 
+  `oauth_listener()` has been deprecated, as the R session does not need
+  to be interactive.
+
+* Changed example in `write_stream` from 
+  https://jeroenooms.github.io/data/diamonds.json to 
+  https://github.com/jeroen/data/raw/gh-pages/diamonds.json
+  in example code as the link was changed (@muschellij2).
+
+* Added `pause_min` to `RETRY` requests, allowing for sub-second
+  delays. (Use with caution! Generally the default is preferred.) (@r2evans)
+
+* `init_oauth2.0()` gains `config_init` which allows you to supply additional
+  config for the initial requests. This is needed for some APIs (e.g. reddit) 
+  which rate limit based on `user_agent` (@muschellij2, #363).
+
+* `RETRY()` gains a new parameter `terminate_on` that gives caller greater 
+  control over which status codes make it stop retrying. It also retries 
+  if an error occurs during the request (@asieira, #404)
+
+* Fix bug with cert bundle lookup: `find_cert_bundle()` will now return cert 
+  bundle in "R_HOME/etc" (@jiwalker-usgs, #386).
+
+* `oauth_service_token()` gains a `sub` parameter so you can request
+  access on behalf of another user (#410).
+
+* With HTTP multipart encoding, you can now send lists containing 
+  `curl::form_data()`. This makes it possible to specify the mime-type
+  of individual components (#430).
+
+* `oauth_service_token()` now accepts a character vector containing multiple
+  scopes as described in the documentation (#389).
+
+* Don't export `length()` method for internal `path` class (#395)
+
+* New oauth cache files are always added to `.gitignore` and, if it exists, 
+  `.Rbuildignore`. Specifically, this now happens when option 
+  `httr_oauth_cache = TRUE` or user specifies cache file name explicitly. 
+  (@jennybc, #436)
+
+* New functions `set_callback()` and `get_callback()` set and query
+  callback functions that are called right before and after performing an
+  HTTP request (@gaborcsardi, #409)
+
+* Fix bug for OAuth 1 process: `oauth_encode()` now handles UTF-8 characters 
+  correctly. (@yutannihilation, #424)
+  
+* More forms of empty query are recognized as such. Eliminates a source of 
+  spurious trailing `?` and `?=` in URLs produced by `modify_url()`. 
+  (@jennybc, #452)
+
 # httr 1.2.1
 
 * Fix bug with new cache creation code: need to check that 
